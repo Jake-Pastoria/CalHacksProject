@@ -1,51 +1,38 @@
 from taipy.gui import Gui, notify
-# import pandas as pd
-# import openai
-# import os
-# import time
+import pandas as pd
+import openai
+import os
+import time
+import InternshipTracler
 
-# openai.api_key=""
+openai.api_key="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"
 
-# def get_completion(prompt, model="gpt-3.5-turbo"):
-#     messages = [{"role": "user", "content": prompt}]
-#     response = openai.ChatCompletion.create(
-#     model=model,
-#     messages=messages,
-#     temperature=0
-#     )
-#     return response.choices[0].message["content"]
+def getPosition(selectCompany,InternshipTracker=InternshipTracler.InternshipTracker):
+    listofOpp = InternshipTracker.getApplication(selectCompany)
+    return listofOpp[0].position
 
 
-# prompt = "What is 5 + 5?"
+def get_completion(prompt, model="gpt-3.5-turbo"):
+    messages =  messages = [
+        {"role": "system",
+         "content": "You are an interviewer preparing questions for a specified role"
+        },
+        {"role": "user", 
+        "content": f"Give me 5 interview questions based on the job title: {prompt}"}]
+    response = openai.ChatCompletion.create(
+    model=model,
+    messages=messages,
+    temperature=0
+    )
+    return response.choices[0].message["content"]
 
-# response = get_completion(prompt)
-section_1 = """
-<layout|columns=1 1 1|
-#Rendezvous 
+# Main
+tracker = InternshipTracler.InternshipTracker()
+tracker.addAplication("Amazon", "SWE", "applied")
+tracker.addAplication("Amazon", "data engineer", "interviewd")
+tracker.addAplication("Google", "front end developer", "interviewd")
+# print(getPosition("Google", tracker))
+prompt = getPosition("Google", tracker)
 
-<|navbar|lov={[("section_1", "Resume Builder"), ("section_2", "Internship Tracker")]}|>
-|>
-
-Dashboard
-Section1
-"""
-
-value = 10
-
-page = """
-
-
-Slider value: <|{value}|> <br/>
-<|{value}|slider|>
-
-"""
-section_2="""
-#Rendezvous 
-
-<|navbar|lov={[("section_1", "Resume Builder"), ("https://www.taipy.io/project/creating-a-data-dashboard/", "Internship Tracker")]}|>
-|>
-
-Section 2
-"""
-
-Gui(section_1 + page).run(use_reloader=True, port=5001)
+response = get_completion(prompt)
+print(response)
