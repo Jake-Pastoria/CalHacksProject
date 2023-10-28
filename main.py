@@ -3,17 +3,13 @@ import pandas as pd
 import openai
 import os
 import time
-import InternshipTracler
+from audioInterp import *
 
 openai.api_key="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"
 
-def getPosition(selectCompany,InternshipTracker=InternshipTracler.InternshipTracker):
-    listofOpp = InternshipTracker.getApplication(selectCompany)
-    return listofOpp[0].position
-
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
-    messages =  messages = [
+    messages = [
         {"role": "system",
          "content": "You are an interviewer preparing questions for a specified role"
         },
@@ -26,13 +22,44 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     )
     return response.choices[0].message["content"]
 
-# Main
-tracker = InternshipTracler.InternshipTracker()
-tracker.addAplication("Amazon", "SWE", "applied")
-tracker.addAplication("Amazon", "data engineer", "interviewd")
-tracker.addAplication("Google", "front end developer", "interviewd")
-# print(getPosition("Google", tracker))
-prompt = getPosition("Google", tracker)
 
-response = get_completion(prompt)
-print(response)
+prompt = ""
+prompt2 = ""
+content = ""
+
+# response = get_completion(prompt)
+
+def test(state):
+    state.prompt2 = state.prompt
+    x = get_completion(state.prompt2)
+    state.value = x
+    
+def printer(state):
+    state.value = state.content
+    state.value = asyncio.run(main(state.content))
+
+value = "Insert File..."
+
+page = """
+#Rendezvous
+
+<|{value}|text|id=hi|>
+#
+<|{content}|file_selector|extensions=.mp3,.mp4,.m4a|>
+<|Test File|button|on_action=printer|>
+#
+<|{prompt}|input|id=enter|>
+<|Submit Resume|button|on_action=test|>
+
+"""
+page_file = """
+Test
+"""
+pages = {
+    "/": "<|toggle|theme|>\n<center>\n<|navbar|>\n</center>",
+    "upload": page,
+    "prompt": page_file,
+}
+
+
+Gui(pages=pages).run(use_reloader=True, port=5001)
