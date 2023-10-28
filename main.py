@@ -41,16 +41,28 @@ def printer(state):
 value = "Insert File..."
 
 page = """
-#Rendezvous
+#Proficient
 
+
+#
+<|{prompt}|input|id=enter|label=Job Title|>
+<|Generate Interview Questions|button|on_action=test|>
+
+<|{prompt}|input|id=response|label=Awaiting AI Response...|active=False|multiline=True|>
+
+"""
+page_file = """
 <|{value}|text|id=hi|>
 #
 <|{content}|file_selector|extensions=.mp3,.mp4,.m4a|>
 <|Test File|button|on_action=printer|>
-#
-<|{prompt}|input|id=enter|>
-<|Submit Resume|button|on_action=test|>
-
 """
 
-Gui(page).run(use_reloader=True, port=5001)
+pages = {
+    "/": "<|toggle|theme|>\n<center>\n<|navbar|>\n</center>",
+    "upload": page,
+    "prompt": page_file,
+}
+
+
+Gui(pages=pages).run(use_reloader=True, port=5001)

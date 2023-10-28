@@ -6,6 +6,15 @@
 }
 
 #enter{
+    width: 100px;
+    height: 30px;
+}
+
+#return{
     width: 400px;
     height: 400px;
 }
+
+/* .taipy-text{
+    font-size: 100px;
+} */
