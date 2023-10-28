@@ -4,7 +4,7 @@ import openai
 import os
 import time
 
-openai.api_key="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"
+openai.api_key=""
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
     messages = [{"role": "user", "content": prompt}]
