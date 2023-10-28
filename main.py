@@ -3,11 +3,18 @@ import pandas as pd
 import openai
 import os
 import time
+from audioInterp import *
 
-openai.api_key=""
+openai.api_key="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"
+
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
-    messages = [{"role": "user", "content": prompt}]
+    messages = [
+        {"role": "system",
+         "content": "You are an interviewer preparing questions for a specified role"
+        },
+        {"role": "user", 
+        "content": f"Give me 5 interview questions based on the job title: {prompt}"}]
     response = openai.ChatCompletion.create(
     model=model,
     messages=messages,
@@ -16,17 +23,33 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
     return response.choices[0].message["content"]
 
 
-prompt = "What is 5 + 5?"
+prompt = ""
+prompt2 = ""
+content = ""
 
-response = get_completion(prompt)
+# response = get_completion(prompt)
 
-value = 10
+def test(state):
+    state.prompt2 = state.prompt
+    x = get_completion(state.prompt2)
+    state.value = x
+    
+def printer(state):
+    state.value = state.content
+    state.value = asyncio.run(main(state.content))
+
+value = "Insert File..."
 
 page = """
-#Rendezvous {response}
+#Rendezvous
 
-Slider value: <|{value}|> <br/>
-<|{value}|slider|>
+<|{value}|text|id=hi|>
+#
+<|{content}|file_selector|extensions=.mp3,.mp4,.m4a|>
+<|Test File|button|on_action=printer|>
+#
+<|{prompt}|input|id=enter|>
+<|Submit Resume|button|on_action=test|>
 
 """
 
