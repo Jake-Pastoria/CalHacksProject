@@ -9,12 +9,13 @@ openai.api_key="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"
 
 
 def get_completion(prompt, model="gpt-3.5-turbo"):
+    print(prompt)
     messages = [
         {"role": "system",
-         "content": "You are an interviewer preparing questions for a specified role"
+         "content": "You are an interviewer preparing questions"
         },
         {"role": "user", 
-        "content": f"Give me 5 interview questions (both technical and behavioral that arent too specific: {prompt}"}]
+        "content": f"Give me 5 interview questions for this job position: {prompt}"}]
     response = openai.ChatCompletion.create(
     model=model,
     messages=messages,
@@ -30,42 +31,43 @@ content = ""
 # response = get_completion(prompt)
 
 def test(state):
-    state.prompt2 = state.value
+    state.prompt2 = state.prompt
     x = get_completion(state.prompt2)
     state.returnVal = x
     
 def printer(state):
-    state.value = state.content
-    state.value = asyncio.run(main(state.content))
+    # state.value = state.content
+    state.value = get_top_emotions(run(state.content))
+
+def change(state):
+    state.value = "Submitted!"
 
 value = "Insert File..."
 returnVal = ""
 page = """
-#Proficient
 
-##Generate interview questions
+<center><|Generate interview questions|text|id=hdr|></center>
 #
-<|{value}|text|id=hi|>
+<center><|{prompt}|input|id=enter|label=Job Title|><|Generate Interview Questions|button|on_action=test|></center>
 #
-<|{prompt}|input|id=enter|label=Job Title|>
-<|Generate Interview Questions|button|on_action=test|>
-
-<|{returnVal}|input|id=response|label=Awaiting AI Response...|active=False|multiline=True|>
+<center><|{returnVal}|input|id=response|label=Awaiting AI Response...|active=False|multiline=True|height=50|></center>
 
 """
 page_file = """
-#Proficient
-##Analyze your responses
-<|{value}|text|id=hi|>
+<center><|AI Analyzations of your responses|text|id=hdr1|></center>
+
 #
-<|{content}|file_selector|extensions=.mp3,.mp4,.m4a|>
-<|Test File|button|on_action=printer|>
+<center><|Upload a video of you answering the questions for, the previous page to receive feedback|></center>
+#
+<center><|{value}|text|id=hi|></center>
+<center><|{content}|file_selector|extensions=.mp3,.mp4,.m4a|on_action=change|></center>
+<center><|Submit|button|on_action=printer|></center>
 """
 
 pages = {
-    "/": "<|toggle|theme|>\n<center>\n<|navbar|>\n</center>",
-    "upload": page,
-    "prompt": page_file,
+    "/": "<|Proficient|text|id=title|height=30px|width=30px|><|toggle|theme|>\n<center>\n<|navbar|>\n</center>",
+    "generate-questions": page,
+    "receive-feedback": page_file,
 }
 
 
