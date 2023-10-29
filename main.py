@@ -14,7 +14,7 @@ def get_completion(prompt, model="gpt-3.5-turbo"):
          "content": "You are an interviewer preparing questions for a specified role"
         },
         {"role": "user", 
-        "content": f"Give me 5 interview questions based on the job title: {prompt}"}]
+        "content": f"Give me 5 interview questions (both technical and behavioral that arent too specific: {prompt}"}]
     response = openai.ChatCompletion.create(
     model=model,
     messages=messages,
@@ -30,28 +30,32 @@ content = ""
 # response = get_completion(prompt)
 
 def test(state):
-    state.prompt2 = state.prompt
+    state.prompt2 = state.value
     x = get_completion(state.prompt2)
-    state.value = x
+    state.returnVal = x
     
 def printer(state):
     state.value = state.content
     state.value = asyncio.run(main(state.content))
 
 value = "Insert File..."
-
+returnVal = ""
 page = """
 #Proficient
 
-
+##Generate interview questions
+#
+<|{value}|text|id=hi|>
 #
 <|{prompt}|input|id=enter|label=Job Title|>
 <|Generate Interview Questions|button|on_action=test|>
 
-<|{prompt}|input|id=response|label=Awaiting AI Response...|active=False|multiline=True|>
+<|{returnVal}|input|id=response|label=Awaiting AI Response...|active=False|multiline=True|>
 
 """
 page_file = """
+#Proficient
+##Analyze your responses
 <|{value}|text|id=hi|>
 #
 <|{content}|file_selector|extensions=.mp3,.mp4,.m4a|>
