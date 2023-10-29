@@ -59,6 +59,7 @@ page_file = """
 #
 <center><|Upload a video of you answering the questions for, the previous page to receive feedback|></center>
 #
+<center><|The top 5 emotions the AI detected were:|text|></center>
 <center><|{value}|text|id=hi|></center>
 <center><|{content}|file_selector|extensions=.mp3,.mp4,.m4a|on_action=change|></center>
 <center><|Submit|button|on_action=printer|></center>

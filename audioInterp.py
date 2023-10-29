@@ -24,6 +24,13 @@ from hume import HumeBatchClient
 from hume.models.config import FaceConfig
 from hume.models.config import ProsodyConfig
 
+def output(list):
+    returnString = ""
+    for i in range(len(list)):
+        returnString += f"{i + 1}. {list[i]} \n"
+    return returnString     
+
+
 
 
 def get_top_emotions(data):
@@ -46,7 +53,7 @@ def get_top_emotions(data):
         })
     
     print(emotions)
-    return [x['name'] for x in emotions]
+    return output([x['name'] for x in emotions])
     
 
 client = HumeBatchClient("4pLMpdxQgho6hO7YaPvFrm4xssArylydAIgfUfAZrh6A44xu")
